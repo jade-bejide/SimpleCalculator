@@ -10,12 +10,13 @@ from time import sleep
 
 screen_capture = ""
 
-def clearLists():
+#clear buffer
+def clearBuffer():
     global numbers, operations, screen_capture
     screen_capture = ""
     display.value = screen_capture
 
-
+#delete last input in buffer
 def backSpace():
     global screen_capture
     try:
@@ -24,7 +25,9 @@ def backSpace():
     except:
         pass
 
-def getOperator(num1, operator, num2):
+
+#Calculate the result
+def performCalculation(num1, operator, num2):
     if operator == "+":
         answer = float(num1) + float(num2)
     elif operator == "-":
@@ -37,7 +40,7 @@ def getOperator(num1, operator, num2):
         answer = float(num1) / float(num2)
     elif operator == "P":
         answer = float(num1) ** float(num2)
-
+        
     return answer
 
 def calculate():
@@ -49,9 +52,10 @@ def calculate():
     i = 0
 
     if display.value == "Division By Zero Error":
-        clearLists()
+        clearBuffer()
         return
     while len(screen_capture) != 1 or screen_capture[len(screen_capture)-1] not in operators:
+        #split current input into items to be calculated
         if screen_capture[i] in operators and i > 0:
             operator = screen_capture[i]
             vals = screen_capture.split(operator)
@@ -71,17 +75,17 @@ def calculate():
     
 
 
-    
-    display.value = getOperator(hold[0], hold[1], hold[2])
+    #get result
+    display.value = performCalculation(hold[0], hold[1], hold[2])
     screen_capture = display.value
 
 
 
-
+#Displays current input to the screen, a button press at a time
 def screenCapture(obj):
     global screen_capture, display
     if display.value == "Division By Zero Error":
-        clearLists()
+        clearBuffer()
     obj = str(obj)
     screen_capture += obj
     display.value = screen_capture
@@ -126,7 +130,7 @@ decimalPoint = PushButton(operatorsBox, text=".", command=lambda:screenCapture("
 
 ioBox = Box(app, layout="grid", align="bottom", height=100,width=350)
 
-clear = PushButton(ioBox, text="CLEAR", command=clearLists, grid=[0,0])
+clear = PushButton(ioBox, text="CLEAR", command=clearBuffer, grid=[0,0])
 enter = PushButton(ioBox, text="=", command=calculate, grid=[1,0])
 delete = PushButton(ioBox, text="DEL", command=backSpace, grid=[2,0])
 
