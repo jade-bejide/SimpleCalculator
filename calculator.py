@@ -24,6 +24,7 @@ def backSpace():
         pass
 
 def getOperator(num1, operator, num2):
+    print(num1, operator, num2)
     if operator == "+":
         answer = float(num1) + float(num2)
     elif operator == "-":
@@ -31,6 +32,8 @@ def getOperator(num1, operator, num2):
     elif operator == "x":
         answer = float(num1) * float(num2)
     elif operator == "÷":
+        if (num2 == "0"):
+            return "Division By Zero Error"
         answer = float(num1) / float(num2)
     elif operator == "P":
         answer = float(num1) ** float(num2)
@@ -45,26 +48,30 @@ def calculate():
     until = len(screen_capture)
     i = 0
     while len(screen_capture) != 1 or screen_capture[len(screen_capture)-1] not in operators:
-        if screen_capture[i] in operators:
-            number = screen_capture[0:i]
-
-            hold.append(number)
+        if screen_capture[i] in operators and i > 0:
             operator = screen_capture[i]
+            vals = screen_capture.split(operator)
+            print(vals)
+            number = vals[0]
+            hold.append(number)
             hold.append(operator)
-            screen_capture = screen_capture[i+1:len(screen_capture)]
+            screen_capture = vals[1]
             hold.append(screen_capture)
             break
             
         else:
             i += 1
 
-    if len(screen_capture) == 1:
-        hold.append(screen_capture)
+        if len(screen_capture) == 1:
+            hold.append(screen_capture)
+
+    
 
 
     
     display.value = getOperator(hold[0], hold[1], hold[2])
     screen_capture = display.value
+
 
 def screenCapture(obj):
     global screen_capture, display
