@@ -4,6 +4,7 @@
 #Update function to handle multiple operations in one go
 
 from guizero import *
+from time import sleep 
 
 #Commands
 
@@ -24,7 +25,6 @@ def backSpace():
         pass
 
 def getOperator(num1, operator, num2):
-    print(num1, operator, num2)
     if operator == "+":
         answer = float(num1) + float(num2)
     elif operator == "-":
@@ -47,11 +47,14 @@ def calculate():
 
     until = len(screen_capture)
     i = 0
+
+    if display.value == "Division By Zero Error":
+        clearLists()
+        return
     while len(screen_capture) != 1 or screen_capture[len(screen_capture)-1] not in operators:
         if screen_capture[i] in operators and i > 0:
             operator = screen_capture[i]
             vals = screen_capture.split(operator)
-            print(vals)
             number = vals[0]
             hold.append(number)
             hold.append(operator)
@@ -73,8 +76,12 @@ def calculate():
     screen_capture = display.value
 
 
+
+
 def screenCapture(obj):
     global screen_capture, display
+    if display.value == "Division By Zero Error":
+        clearLists()
     obj = str(obj)
     screen_capture += obj
     display.value = screen_capture
@@ -112,6 +119,7 @@ minus = PushButton(operatorsBox, text="-", command=lambda:screenCapture("-"), gr
 multiply = PushButton(operatorsBox, text="x", command=lambda:screenCapture("x"), grid=[1,0])
 divide = PushButton(operatorsBox, text="÷", command=lambda:screenCapture("÷"), grid=[1,1])
 indice = PushButton(operatorsBox, text="P", command=lambda:screenCapture("P"), grid=[2,0])
+decimalPoint = PushButton(operatorsBox, text=".", command=lambda:screenCapture("."), grid=[2,1])
 
 
 #Input/Output
