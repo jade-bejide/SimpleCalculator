@@ -39,21 +39,27 @@ def performCalculation(num1, operator, num2):
             return "Division By Zero Error"
         answer = float(num1) / float(num2)
     elif operator == "P":
-        answer = float(num1) ** float(num2)
-        
+        try:
+            answer = float(num1) ** float(num2)
+        except OverflowError:
+            return "Overflow Error"
+
     return answer
 
 def calculate():
-    global numbers, operations, screen_capture
+    global numbers, operations, screen_capture, errors
     operators = ["+", "-", "x", "÷", "P"]
     hold = []
 
     until = len(screen_capture)
     i = 0
 
-    if display.value == "Division By Zero Error":
+    if display.value in errors:
         clearBuffer()
         return
+
+
+
     while len(screen_capture) != 1 or screen_capture[len(screen_capture)-1] not in operators:
         #split current input into items to be calculated
         if screen_capture[i] in operators and i > 0:
@@ -79,12 +85,22 @@ def calculate():
     display.value = performCalculation(hold[0], hold[1], hold[2])
     screen_capture = display.value
 
+    if "e" in screen_capture and screen_capture not in errors:
+        valueXs = screen_capture.split("e")
+        print(valueXs)
+        exponent = valueXs[1]
+        exponentSign = exponent[0]
+        exponentValue = exponent[1:len(exponent)]
+        if exponentSign == "-": value = float(valueXs[0]) ** (-float(exponentValue))
+        else: value = float(valueXs[0]) ** float(exponentValue)
+        screen_capture = str(value)
+
 
 
 #Displays current input to the screen, a button press at a time
 def screenCapture(obj):
-    global screen_capture, display
-    if display.value == "Division By Zero Error":
+    global screen_capture, display, errors
+    if display.value in errors:
         clearBuffer()
     obj = str(obj)
     screen_capture += obj
@@ -92,6 +108,9 @@ def screenCapture(obj):
 
 #Configure app
 app = App("Calculator", height=400, width=500)
+
+#errors
+errors = ["Division By Zero Error", "Overflow Error"]
 #Display Box
 
 displayBox = Box(app, border=True, height=100, width=350)
